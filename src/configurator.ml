@@ -25,6 +25,7 @@ type t =
   ; log               : string -> unit
   ; mutable counter   : int
   ; ext_obj           : string
+  ; ext_exe           : string
   ; c_compiler        : string
   ; stdlib_dir        : string
   ; ccomp_type        : string
@@ -197,6 +198,7 @@ let create ?dest_dir ?ocamlc ?(log=ignore) name =
     ; dest_dir
     ; counter = 0
     ; ext_obj       = ""
+    ; ext_exe       = ""
     ; c_compiler    = ""
     ; stdlib_dir    = ""
     ; ccomp_type    = ""
@@ -231,6 +233,7 @@ let create ?dest_dir ?ocamlc ?(log=ignore) name =
   { t with
     ocamlc_config
   ; ext_obj    = get "ext_obj"
+  ; ext_exe    = get "ext_exe"
   ; c_compiler
   ; stdlib_dir = get "standard_library"
   ; ccomp_type = get "ccomp_type"
@@ -248,7 +251,7 @@ let compile_c_prog t ?(c_flags=[]) ?(link_flags=[]) code =
   let base = dir ^/ "test" in
   let c_fname = base ^ ".c" in
   let obj_fname = base ^ t.ext_obj in
-  let exe_fname = base ^ ".exe" in
+  let exe_fname = base ^ t.ext_exe in
   Out_channel.write_all c_fname ~data:code;
   logf t "compiling c program:";
   List.iter (String.split_lines code) ~f:(logf t " | %s");
